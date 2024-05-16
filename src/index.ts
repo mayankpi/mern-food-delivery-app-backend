@@ -3,8 +3,9 @@ import cors from "cors";
 import "dotenv/config";
 import mongoose from "mongoose";
 import myUserRoute from "./routes/MyUserRoute";
+import MyRestaurantRoute from "./routes/MyRestaurantRoute";
 import { v2 as cloudinary } from "cloudinary";
-
+const helmet = require("helmet");
 mongoose
     .connect(process.env.MONGODB_CONNECTION_STRING as string)
     .then(() => console.log("connected to database"));
@@ -18,11 +19,13 @@ cloudinary.config({
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(helmet());
 
 app.get("/health", async (req: Request, res: Response) => {
     res.send({ message: "health ok!" });
 });
 app.use("/api/my/user", myUserRoute);
+app.use("/api/my/restaurant", MyRestaurantRoute);
 
 app.listen(3000, () => {
     console.log(`Server started on localhost:3000`);
